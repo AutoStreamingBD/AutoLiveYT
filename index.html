@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoStreamingBD - 10 Min Trial</title>
+    <title>AutoStreamingBD - Full HD Live Trial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -18,10 +18,8 @@
 <body class="min-h-screen flex flex-col items-center p-4">
 
     <header class="text-center my-12">
-        <h1 class="text-5xl md:text-6xl font-black futuristic bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-            AutoStreamingBD
-        </h1>
-        <p class="text-gray-400 mt-4 tracking-widest uppercase text-sm futuristic">Lifetime 10m Free Trial</p>
+        <h1 class="text-5xl md:text-6xl font-black futuristic bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent uppercase">AutoStreamingBD</h1>
+        <p class="text-gray-400 mt-4 tracking-widest uppercase text-sm futuristic">10m Free Full HD Trial</p>
     </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 w-full max-w-6xl mb-12">
@@ -29,7 +27,7 @@
             for(let i=1; i<=5; i++) {
                 document.write(`
                     <div id="slot${i}-card" class="glass p-6 rounded-3xl text-center border-white/5 transition-all duration-500">
-                        <p class="text-[10px] futuristic text-cyan-500 mb-1">SLOT 0${i}</p>
+                        <p class="text-[10px] futuristic text-cyan-500 mb-1 uppercase">Slot 0${i}</p>
                         <div id="s${i}-status" class="text-green-400 font-bold">Checking...</div>
                     </div>
                 `);
@@ -45,9 +43,9 @@
             </div>
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">YouTube Video ID</label>
-                <input id="videoId" type="text" placeholder="dQw4w9WgXcQ" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
+                <input id="videoId" type="text" placeholder="e.g. dQw4w9WgXcQ" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
             </div>
-            <button onclick="mainAction()" id="mainBtn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-700 py-5 rounded-2xl font-black text-xl futuristic active:scale-95 transition-all">START LIVE</button>
+            <button onclick="mainAction()" id="mainBtn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-700 py-5 rounded-2xl font-black text-xl futuristic transition-all active:scale-95">START FULL HD LIVE</button>
         </div>
     </div>
 
@@ -64,88 +62,83 @@
     </div>
 
     <script>
-        // --- CONFIG ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSS52Pp0z1rYIWzb0A-V7Yx_Ko4T7EFp8",
-            authDomain: "autostreamingbd.firebaseapp.com",
-            projectId: "autostreamingbd",
-            storageBucket: "autostreamingbd.firebasestorage.app",
-            messagingSenderId: "604115747119",
-            appId: "1:604115747119:web:40ffdab256239d3d5f61da"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBSS52Pp0z1rYIWzb0A-V7Yx_Ko4T7EFp8", 
+            authDomain: "autostreamingbd.firebaseapp.com", 
+            projectId: "autostreamingbd", 
+            storageBucket: "autostreamingbd.firebasestorage.app", 
+            messagingSenderId: "604115747119", 
+            appId: "1:604115747119:web:40ffdab256239d3d5f61da" 
         };
-        const GITHUB_TOKEN = "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"; // Private Repo-তে রাখা নিরাপদ
+        const GITHUB_TOKEN = "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"; 
         const REPO_OWNER = "AutoStreamingBD";
         const REPO_NAME = "AutoLiveYT";
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- REALTIME SYNC ---
         db.collection("system").doc("live_slots").onSnapshot((doc) => {
             const data = doc.data() || {};
             for (let i = 1; i <= 5; i++) {
-                const statusLabel = document.getElementById(`s${i}-status`);
-                const card = document.getElementById(`slot${i}-card`);
+                const el = document.getElementById(`s${i}-status`), card = document.getElementById(`slot${i}-card`);
                 if (data[`slot${i}`] === "Available") {
-                    statusLabel.innerText = "Available";
-                    statusLabel.className = "text-green-400 font-bold";
-                    card.classList.remove('slot-booked');
+                    el.innerText = "Available"; el.className = "text-green-400 font-bold text-lg"; card.classList.remove('slot-booked');
                 } else {
                     card.classList.add('slot-booked');
-                    const distance = data[`slot${i}_time`] - Date.now();
-                    if(distance > 0) startTimer(i, data[`slot${i}_time`], statusLabel);
+                    updateTimer(i, data[`slot${i}_time`], el);
                 }
             }
         });
 
-        function startTimer(num, endTime, el) {
+        function updateTimer(n, endTime, el) {
             const x = setInterval(() => {
                 const dist = endTime - Date.now();
-                const m = Math.floor(dist / 60000), s = Math.floor((dist % 60000) / 1000);
-                el.innerText = `WAIT ${m}:${s < 10 ? '0' : ''}${s}`;
-                el.className = "text-red-500 font-bold animate-pulse futuristic";
                 if (dist <= 0) { 
                     clearInterval(x); 
-                    db.collection("system").doc("live_slots").update({ [`slot${num}`]: "Available" });
+                    db.collection("system").doc("live_slots").update({ [`slot${n}`]: "Available" }); 
+                    return; 
                 }
+                const m = Math.floor(dist/60000), s = Math.floor((dist%60000)/1000);
+                el.innerText = `WAIT ${m}:${s < 10 ? '0' : ''}${s}`;
+                el.className = "text-red-500 font-bold animate-pulse futuristic";
             }, 1000);
         }
 
-        // --- ACTION ---
         async function mainAction() {
-            const key = document.getElementById('streamKey').value;
-            const vid = document.getElementById('videoId').value;
-            if(!key || !vid) return alert("তথ্য দিন!");
+            const key = document.getElementById('streamKey').value, vid = document.getElementById('videoId').value;
+            if(!key || !vid) return alert("Stream Key এবং Video ID দিন!");
 
-            const ipCheck = await fetch('https://ipapi.co/json/').then(r => r.json());
-            if(ipCheck.proxy) return alert("VPN Blocked!");
+            try {
+                const ipCheck = await fetch('https://ipapi.co/json/').then(r => r.json());
+                if(ipCheck.proxy) return alert("VPN/Proxy ব্যবহার করা যাবে না!");
 
-            const overlay = document.getElementById('overlay');
-            overlay.classList.remove('hidden');
-            document.getElementById('overlayMsg').innerText = "Please never use copyright video,\nUse only your own video.";
+                const overlay = document.getElementById('overlay');
+                overlay.classList.remove('hidden');
+                document.getElementById('overlayMsg').innerText = "Please never use copyright video,\nUse only your own video.";
 
-            setTimeout(async () => {
-                overlay.classList.add('hidden');
-                const snap = await db.collection("system").doc("live_slots").get();
-                const data = snap.data();
-                let slotIdx = null;
-                for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
+                setTimeout(async () => {
+                    overlay.classList.add('hidden');
+                    const snap = await db.collection("system").doc("live_slots").get(), data = snap.data();
+                    let slotIdx = null;
+                    for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
+                    
+                    if(!slotIdx) return alert("দুঃখিত, এখন সব স্লট বুকড!");
 
-                if(!slotIdx) return alert("স্লট খালি নেই!");
+                    // GitHub Trigger
+                    await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' },
+                        body: JSON.stringify({ event_type: "start-live", client_payload: { stream_key: key, video_id: vid } })
+                    });
 
-                // GitHub Action Trigger
-                await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' },
-                    body: JSON.stringify({ event_type: "start-live", client_payload: { stream_key: key, video_id: vid } })
-                });
-
-                const endAt = Date.now() + 600000;
-                await db.collection("system").doc("live_slots").update({ [`slot${slotIdx}`]: "Booked", [`slot${slotIdx}_time`]: endAt });
-                await db.collection("logs").add({ ip: ipCheck.ip, time: new Date() });
-
-                setTimeout(() => { alert("Your free trail stream will be finished soon, for enjoying 6 houre live streaming contact with Ahyan Creations LTD team +8801604444716 Whatsapp."); }, 540000);
-            }, 4000);
+                    const endAt = Date.now() + 600000;
+                    await db.collection("system").doc("live_slots").update({ [`slot${slotIdx}`]: "Booked", [`slot${slotIdx}_time`]: endAt });
+                    
+                    setTimeout(() => { 
+                        alert("Your free trail stream will be finished soon, for enjoying 6 houre live streaming contact with Ahyan Creations LTD team +8801604444716 Whatsapp."); 
+                    }, 540000);
+                }, 4000);
+            } catch(e) { alert("Error connecting to server!"); }
         }
     </script>
 </body>
