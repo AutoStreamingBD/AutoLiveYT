@@ -3,62 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoStreamingBD - Full HD Live Trial</title>
+    
+    <title>AutoStreamingBD | Full HD 24/7 Automated Live Stream Trial</title>
+    <meta name="description" content="Get a free 10-minute Full HD automated live streaming trial for YouTube. Premium quality 24/7 streaming services by Ahyan Creations LTD.">
+    <meta name="keywords" content="YouTube Live Stream, Automated Streaming, Full HD Stream, AutoStreamingBD, Cloud Streaming">
+    <meta name="author" content="Ahyan Creations LTD">
+    <link rel="canonical" href="https://autostreamingbd.vercel.app/">
+
+    <meta property="og:title" content="AutoStreamingBD - Full HD Live Trial">
+    <meta property="og:description" content="Experience premium automated live streaming for free.">
+    <meta property="og:type" content="website">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Hind+Siliguri:wght@400;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #050505; color: white; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Hind+Siliguri:wght@300;500;700&display=swap');
+        
+        :root {
+            --primary-cyan: #00f2ff;
+            --primary-blue: #0062ff;
+        }
+
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            background: radial-gradient(circle at top right, #0a1128, #000000, #050505);
+            color: white; 
+            overflow-x: hidden;
+        }
+
         .futuristic { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .slot-booked { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; }
+        
+        /* Premium Glassmorphism */
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .premium-input:focus {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary-blue), #6022ff);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gradient:hover {
+            box-shadow: 0 0 30px rgba(0, 98, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .slot-booked { 
+            border-color: #ff2e2e !important; 
+            background: rgba(255, 46, 46, 0.05) !important; 
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+
+        .loader {
+            border-top-color: var(--primary-cyan);
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4">
+<body class="min-h-screen flex flex-col items-center px-4 py-8">
 
-    <header class="text-center my-12">
-        <h1 class="text-5xl md:text-6xl font-black futuristic bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent uppercase">AutoStreamingBD</h1>
-        <p class="text-gray-400 mt-4 tracking-widest uppercase text-sm futuristic">10m Free Full HD Trial</p>
+    <header class="text-center mt-8 mb-16 relative z-10">
+        <div class="inline-block px-4 py-1 glass rounded-full text-[10px] futuristic text-cyan-400 mb-4 tracking-widest uppercase">
+            Powered by Ahyan Creations
+        </div>
+        <h1 class="text-6xl md:text-8xl font-black futuristic bg-gradient-to-b from-white via-cyan-200 to-blue-500 bg-clip-text text-transparent uppercase tracking-tighter float-anim">
+            AutoLive
+        </h1>
+        <p class="text-gray-400 mt-2 tracking-[0.5em] uppercase text-xs futuristic opacity-70">Automated HD Gateway</p>
     </header>
 
-    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 w-full max-w-6xl mb-12">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-5xl mb-12 relative">
         <script>
             for(let i=1; i<=5; i++) {
                 document.write(`
-                    <div id="slot${i}-card" class="glass p-6 rounded-3xl text-center border-white/5 transition-all duration-500">
-                        <p class="text-[10px] futuristic text-cyan-500 mb-1 uppercase">Slot 0${i}</p>
-                        <div id="s${i}-status" class="text-green-400 font-bold">Checking...</div>
+                    <div id="slot${i}-card" class="glass p-6 rounded-[2rem] text-center transition-all duration-700 hover:bg-white/5 group">
+                        <p class="text-[9px] futuristic text-gray-500 mb-2 uppercase tracking-widest">Server Slot 0${i}</p>
+                        <div id="s${i}-status" class="text-green-400 font-bold text-sm futuristic tracking-tighter">INITIATING...</div>
                     </div>
                 `);
             }
         </script>
     </div>
 
-    <div class="glass w-full max-w-lg p-8 rounded-[2.5rem] shadow-2xl">
-        <div class="space-y-6">
-            <div>
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">YouTube Stream Key</label>
-                <input id="streamKey" type="password" placeholder="••••••••••••" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
-            </div>
-            <div>
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">YouTube Video ID</label>
-                <input id="videoId" type="text" placeholder="e.g. dQw4w9WgXcQ" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
-            </div>
-            <button onclick="mainAction()" id="mainBtn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-700 py-5 rounded-2xl font-black text-xl futuristic transition-all active:scale-95">START FULL HD LIVE</button>
-        </div>
-    </div>
+    <main class="w-full max-w-xl relative">
+        <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-600/10 blur-[100px] rounded-full"></div>
+        <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600/10 blur-[100px] rounded-full"></div>
+        
+        <div class="glass p-8 md:p-12 rounded-[3rem] relative overflow-hidden">
+            <h2 class="text-2xl font-bold mb-8 text-center futuristic tracking-tight">Configuration <span class="text-cyan-400">Panel</span></h2>
+            
+            <div class="space-y-8">
+                <div class="group">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-4 mb-2 block tracking-widest">YouTube Stream Key</label>
+                    <input id="streamKey" type="password" placeholder="•••• •••• •••• ••••" class="w-full premium-input p-5 rounded-2xl outline-none text-cyan-400 placeholder:text-gray-700">
+                </div>
+                
+                <div class="group">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-4 mb-2 block tracking-widest">YouTube Video ID</label>
+                    <input id="videoId" type="text" placeholder="dQw4w9WgXcQ" class="w-full premium-input p-5 rounded-2xl outline-none text-white placeholder:text-gray-700">
+                </div>
 
-    <footer class="mt-auto py-12 text-center border-t border-white/5 w-full max-w-4xl">
-        <p class="text-gray-500 text-sm">প্রতিদিন ৬ ঘন্টা সার্ভিস নিতে চাইলে যোগাযোগ করুন</p>
-        <a href="https://wa.me/8801604444716" class="inline-flex items-center gap-3 mt-4 text-green-400 font-bold text-2xl">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-8 h-8" alt="WA"> +8801604444716
+                <button onclick="mainAction()" id="mainBtn" class="w-full btn-gradient py-6 rounded-2xl font-black text-lg futuristic tracking-widest uppercase active:scale-95 shadow-2xl">
+                    Deploy Live Stream
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20 py-12 text-center w-full max-w-4xl border-t border-white/5">
+        <p class="text-gray-500 text-sm font-light tracking-wide">For enterprise solutions and 24/7 unlimited access</p>
+        <a href="https://wa.me/8801604444716" class="inline-flex items-center gap-4 mt-6 px-8 py-4 glass rounded-full hover:bg-white/5 transition-all group">
+            <span class="text-green-400 font-bold text-xl">+880 1604 444716</span>
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform">
+                <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.335 0-4.241 1.905-4.241 4.24s1.906 4.241 4.241 4.241c2.335 0 4.241-1.905 4.241-4.241s-1.906-4.24-4.241-4.242zm0 10.51c-3.465 0-6.271-2.806-6.271-6.27s2.806-6.271 6.271-6.271 6.271 2.806 6.271 6.271-2.806 6.27-6.271 6.27zm0-12.72c-5.414 0-9.807 4.393-9.807 9.807 0 1.64.405 3.185 1.118 4.542l-1.118 4.542 4.653-1.118c1.312.673 2.793 1.054 4.354 1.054 5.414 0 9.807-4.393 9.807-9.807S17.445 3.962 12.031 3.962z"/></svg>
+            </div>
         </a>
     </footer>
 
-    <div id="overlay" class="fixed inset-0 bg-black/98 backdrop-blur-2xl flex flex-col items-center justify-center z-50 hidden p-10 text-center">
-        <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-        <p id="overlayMsg" class="text-red-500 text-3xl font-bold leading-tight"></p>
+    <div id="overlay" class="fixed inset-0 bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center z-50 hidden px-6">
+        <div class="w-24 h-24 border-4 border-white/5 border-t-cyan-500 rounded-full loader mb-10"></div>
+        <p id="overlayMsg" class="text-red-500 text-2xl md:text-4xl font-bold leading-tight text-center max-w-3xl futuristic"></p>
     </div>
 
     <script>
@@ -77,12 +172,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Realtime Engine
         db.collection("system").doc("live_slots").onSnapshot((doc) => {
             const data = doc.data() || {};
             for (let i = 1; i <= 5; i++) {
                 const el = document.getElementById(`s${i}-status`), card = document.getElementById(`slot${i}-card`);
                 if (data[`slot${i}`] === "Available") {
-                    el.innerText = "Available"; el.className = "text-green-400 font-bold text-lg"; card.classList.remove('slot-booked');
+                    el.innerText = "ONLINE"; el.className = "text-cyan-400 font-bold text-xs futuristic"; card.classList.remove('slot-booked');
                 } else {
                     card.classList.add('slot-booked');
                     updateTimer(i, data[`slot${i}_time`], el);
@@ -99,22 +195,22 @@
                     return; 
                 }
                 const m = Math.floor(dist/60000), s = Math.floor((dist%60000)/1000);
-                el.innerText = `WAIT ${m}:${s < 10 ? '0' : ''}${s}`;
-                el.className = "text-red-500 font-bold animate-pulse futuristic";
+                el.innerText = `${m}:${s < 10 ? '0' : ''}${s} LEFT`;
+                el.className = "text-red-500 font-bold text-xs futuristic animate-pulse";
             }, 1000);
         }
 
         async function mainAction() {
             const key = document.getElementById('streamKey').value, vid = document.getElementById('videoId').value;
-            if(!key || !vid) return alert("Stream Key এবং Video ID দিন!");
+            if(!key || !vid) return alert("Please enter both Stream Key and Video ID.");
 
             try {
                 const ipCheck = await fetch('https://ipapi.co/json/').then(r => r.json());
-                if(ipCheck.proxy) return alert("VPN/Proxy ব্যবহার করা যাবে না!");
+                if(ipCheck.proxy) return alert("Security Warning: VPN/Proxy usage is restricted.");
 
                 const overlay = document.getElementById('overlay');
                 overlay.classList.remove('hidden');
-                document.getElementById('overlayMsg').innerText = "Please never use copyright video,\nUse only your own video.";
+                document.getElementById('overlayMsg').innerHTML = "SYSTEM PROTOCOL:<br><span class='text-white text-lg mt-4 block font-light'>Do not use copyrighted material. Legal ownership is required.</span>";
 
                 setTimeout(async () => {
                     overlay.classList.add('hidden');
@@ -122,9 +218,9 @@
                     let slotIdx = null;
                     for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
                     
-                    if(!slotIdx) return alert("দুঃখিত, এখন সব স্লট বুকড!");
+                    if(!slotIdx) return alert("System Overload: All slots are currently occupied.");
 
-                    // GitHub Trigger
+                    // GitHub API Dispatch
                     await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
                         method: 'POST',
                         headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' },
@@ -135,11 +231,11 @@
                     await db.collection("system").doc("live_slots").update({ [`slot${slotIdx}`]: "Booked", [`slot${slotIdx}_time`]: endAt });
                     
                     setTimeout(() => { 
-                        alert("Your free trail stream will be finished soon, for enjoying 6 houre live streaming contact with Ahyan Creations LTD team +8801604444716 Whatsapp."); 
+                        alert("NOTICE: Trial period ending soon. To secure 24/7 uptime, contact Ahyan Creations LTD via WhatsApp +8801604444716."); 
                     }, 540000);
                 }, 4000);
-            } catch(e) { alert("Error connecting to server!"); }
+            } catch(e) { alert("Network Connection Error."); }
         }
     </script>
 </body>
-</html>
+    </html>
