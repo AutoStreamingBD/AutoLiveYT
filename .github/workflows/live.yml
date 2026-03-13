@@ -1,4 +1,4 @@
-name: YouTube Full HD 1080p Live
+name: Full HD YouTube Streamer
 on:
   repository_dispatch:
     types: [start-live]
@@ -7,21 +7,19 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install FFmpeg
+      - name: Install Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Start Full HD Streaming (10 Min)
+      - name: YouTube to Live Full HD
         run: |
-          # ভিডিও সোর্স এবং ইউটিউব সার্ভার সেটআপ
-          # client_payload এর মাধ্যমে ইনপুট নেওয়া হচ্ছে
+          VIDEO_URL=$(yt-dlp -g -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]" "https://www.youtube.com/watch?v=${{ github.event.client_payload.video_id }}")
           
-          timeout 600s ffmpeg -re -i "YOUR_VIDEO_DIRECT_URL_HERE" \
-          -c:v libx264 -preset veryfast -b:v 4500k -maxrate 4500k -bufsize 9000k \
+          timeout 600s ffmpeg -re -i "$VIDEO_URL" \
+          -c:v libx264 -preset veryfast -b:v 5000k -maxrate 5000k -bufsize 10000k \
           -pix_fmt yuv420p -s 1920x1080 -g 60 -r 30 \
           -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.client_payload.stream_key }}"
