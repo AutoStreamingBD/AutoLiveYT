@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoStreamingBD - 10 Min Trial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Hind+Siliguri:wght@400;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background: #050505; color: white; }
+        .futuristic { font-family: 'Orbitron', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .slot-booked { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <header class="text-center my-12">
+        <h1 class="text-5xl md:text-6xl font-black futuristic bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+            AutoStreamingBD
+        </h1>
+        <p class="text-gray-400 mt-4 tracking-widest uppercase text-sm futuristic">Lifetime 10m Free Trial</p>
+    </header>
+
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 w-full max-w-6xl mb-12">
+        <script>
+            for(let i=1; i<=5; i++) {
+                document.write(`
+                    <div id="slot${i}-card" class="glass p-6 rounded-3xl text-center border-white/5 transition-all duration-500">
+                        <p class="text-[10px] futuristic text-cyan-500 mb-1">SLOT 0${i}</p>
+                        <div id="s${i}-status" class="text-green-400 font-bold">Checking...</div>
+                    </div>
+                `);
+            }
+        </script>
+    </div>
+
+    <div class="glass w-full max-w-lg p-8 rounded-[2.5rem] shadow-2xl">
+        <div class="space-y-6">
+            <div>
+                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">YouTube Stream Key</label>
+                <input id="streamKey" type="password" placeholder="••••••••••••" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">YouTube Video ID</label>
+                <input id="videoId" type="text" placeholder="dQw4w9WgXcQ" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl mt-2 focus:border-cyan-500 outline-none">
+            </div>
+            <button onclick="mainAction()" id="mainBtn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-700 py-5 rounded-2xl font-black text-xl futuristic active:scale-95 transition-all">START LIVE</button>
+        </div>
+    </div>
+
+    <footer class="mt-auto py-12 text-center border-t border-white/5 w-full max-w-4xl">
+        <p class="text-gray-500 text-sm">প্রতিদিন ৬ ঘন্টা সার্ভিস নিতে চাইলে যোগাযোগ করুন</p>
+        <a href="https://wa.me/8801604444716" class="inline-flex items-center gap-3 mt-4 text-green-400 font-bold text-2xl">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-8 h-8" alt="WA"> +8801604444716
+        </a>
+    </footer>
+
+    <div id="overlay" class="fixed inset-0 bg-black/98 backdrop-blur-2xl flex flex-col items-center justify-center z-50 hidden p-10 text-center">
+        <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-8"></div>
+        <p id="overlayMsg" class="text-red-500 text-3xl font-bold leading-tight"></p>
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSS52Pp0z1rYIWzb0A-V7Yx_Ko4T7EFp8",
+            authDomain: "autostreamingbd.firebaseapp.com",
+            projectId: "autostreamingbd",
+            storageBucket: "autostreamingbd.firebasestorage.app",
+            messagingSenderId: "604115747119",
+            appId: "1:604115747119:web:40ffdab256239d3d5f61da"
+        };
+        const GITHUB_TOKEN = "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"; // Private Repo-তে রাখা নিরাপদ
+        const REPO_OWNER = "AutoStreamingBD";
+        const REPO_NAME = "AutoLiveYT";
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- REALTIME SYNC ---
+        db.collection("system").doc("live_slots").onSnapshot((doc) => {
+            const data = doc.data() || {};
+            for (let i = 1; i <= 5; i++) {
+                const statusLabel = document.getElementById(`s${i}-status`);
+                const card = document.getElementById(`slot${i}-card`);
+                if (data[`slot${i}`] === "Available") {
+                    statusLabel.innerText = "Available";
+                    statusLabel.className = "text-green-400 font-bold";
+                    card.classList.remove('slot-booked');
+                } else {
+                    card.classList.add('slot-booked');
+                    const distance = data[`slot${i}_time`] - Date.now();
+                    if(distance > 0) startTimer(i, data[`slot${i}_time`], statusLabel);
+                }
+            }
+        });
+
+        function startTimer(num, endTime, el) {
+            const x = setInterval(() => {
+                const dist = endTime - Date.now();
+                const m = Math.floor(dist / 60000), s = Math.floor((dist % 60000) / 1000);
+                el.innerText = `WAIT ${m}:${s < 10 ? '0' : ''}${s}`;
+                el.className = "text-red-500 font-bold animate-pulse futuristic";
+                if (dist <= 0) { 
+                    clearInterval(x); 
+                    db.collection("system").doc("live_slots").update({ [`slot${num}`]: "Available" });
+                }
+            }, 1000);
+        }
+
+        // --- ACTION ---
+        async function mainAction() {
+            const key = document.getElementById('streamKey').value;
+            const vid = document.getElementById('videoId').value;
+            if(!key || !vid) return alert("তথ্য দিন!");
+
+            const ipCheck = await fetch('https://ipapi.co/json/').then(r => r.json());
+            if(ipCheck.proxy) return alert("VPN Blocked!");
+
+            const overlay = document.getElementById('overlay');
+            overlay.classList.remove('hidden');
+            document.getElementById('overlayMsg').innerText = "Please never use copyright video,\nUse only your own video.";
+
+            setTimeout(async () => {
+                overlay.classList.add('hidden');
+                const snap = await db.collection("system").doc("live_slots").get();
+                const data = snap.data();
+                let slotIdx = null;
+                for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
+
+                if(!slotIdx) return alert("স্লট খালি নেই!");
+
+                // GitHub Action Trigger
+                await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' },
+                    body: JSON.stringify({ event_type: "start-live", client_payload: { stream_key: key, video_id: vid } })
+                });
+
+                const endAt = Date.now() + 600000;
+                await db.collection("system").doc("live_slots").update({ [`slot${slotIdx}`]: "Booked", [`slot${slotIdx}_time`]: endAt });
+                await db.collection("logs").add({ ip: ipCheck.ip, time: new Date() });
+
+                setTimeout(() => { alert("Your free trail stream will be finished soon, for enjoying 6 houre live streaming contact with Ahyan Creations LTD team +8801604444716 Whatsapp."); }, 540000);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
