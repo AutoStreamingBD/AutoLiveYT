@@ -3,32 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoStreamingBD | Cloud Streaming Solutions</title>
+    <title>AutoStreamingBD | Cloud Streaming</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
         body { 
-            font-family: 'Inter', 'Hind Siliguri', sans-serif; 
-            background-color: #f8fafc;
-            color: #1e293b;
+            font-family: 'Inter', 'Hind Siliguri', sans-serif;
+            /* আপনার পছন্দের ইমেজের লিঙ্ক এখানে দিন */
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
         }
-        .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        .slot-booked { background-color: #fef2f2 !important; border-color: #fee2e2 !important; }
-        .btn-primary {
-            background-color: #2563eb;
-            transition: all 0.3s ease;
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn-primary:hover { background-color: #1d4ed8; transform: translateY(-1px); }
+        .slot-booked { background: rgba(239, 68, 68, 0.1) !important; border-color: rgba(239, 68, 68, 0.3) !important; }
         .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #2563eb;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%; width: 40px; height: 40px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -36,65 +38,51 @@
 </head>
 <body class="min-h-screen flex flex-col items-center">
 
-    <nav class="w-full bg-white border-b border-gray-100 py-4 px-6 flex justify-between items-center mb-12">
-        <div class="text-xl font-bold text-blue-600 tracking-tight">AutoStreaming<span class="text-gray-900">BD</span></div>
-        <div class="text-xs text-gray-400 font-medium uppercase tracking-widest">Free Trial System</div>
+    <nav class="w-full bg-black/20 backdrop-blur-md border-b border-white/5 py-5 px-8 flex justify-between items-center mb-12">
+        <div class="text-2xl font-bold text-blue-400">AutoStreaming<span class="text-white">BD</span></div>
     </nav>
 
-    <div class="w-full max-w-5xl px-4 grid grid-cols-1 sm:grid-cols-5 gap-4 mb-10">
+    <div class="w-full max-w-5xl px-4 grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
         <script>
             for(let i=1; i<=5; i++) {
                 document.write(`
-                    <div id="slot${i}-card" class="bg-white border border-gray-200 p-5 rounded-xl text-center card-shadow transition-all duration-500">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Slot 0${i}</p>
-                        <div id="s${i}-status" class="text-sm font-semibold text-gray-300">Syncing...</div>
+                    <div id="slot${i}-card" class="glass-card p-5 rounded-2xl text-center transition-all">
+                        <p class="text-[10px] font-bold text-blue-300 uppercase mb-1">Server 0${i}</p>
+                        <div id="s${i}-status" class="text-sm font-semibold text-gray-400">Loading...</div>
                     </div>
                 `);
             }
         </script>
     </div>
 
-    <main class="w-full max-w-lg px-4">
-        <div class="bg-white p-8 md:p-10 rounded-2xl card-shadow border border-gray-100">
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold text-gray-800">Start Streaming</h1>
-                <p class="text-sm text-gray-500 mt-1">Configure your YouTube live session below.</p>
-            </div>
+    <main class="w-full max-w-lg px-4 mb-10">
+        <div class="glass-card p-10 rounded-[2.5rem] shadow-2xl">
+            <h1 class="text-2xl font-bold mb-2">Live Configuration</h1>
+            <p class="text-gray-400 text-sm mb-8">Deploy your 10-minute trial session instantly.</p>
             
             <div class="space-y-6">
                 <div>
-                    <label class="text-xs font-semibold text-gray-600 uppercase mb-2 block">Stream Key</label>
-                    <input id="streamKey" type="password" placeholder="Paste your key here" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                    <label class="text-xs font-semibold text-gray-400 uppercase mb-2 block">Stream Key</label>
+                    <input id="streamKey" type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white">
                 </div>
-                
                 <div>
-                    <label class="text-xs font-semibold text-gray-600 uppercase mb-2 block">YouTube Video ID</label>
-                    <input id="videoId" type="text" placeholder="e.g. dQw4w9WgXcQ" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                    <label class="text-xs font-semibold text-gray-400 uppercase mb-2 block">Video ID</label>
+                    <input id="videoId" type="text" placeholder="dQw4w9WgXcQ" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white">
                 </div>
-
-                <button onclick="mainAction()" id="mainBtn" class="w-full btn-primary text-white py-4 rounded-lg font-bold text-sm uppercase tracking-wide shadow-lg shadow-blue-100">
-                    Deploy Stream
+                <button onclick="mainAction()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-bold transition-all transform active:scale-95 shadow-lg shadow-blue-900/20">
+                    DEPLOY NOW
                 </button>
             </div>
         </div>
     </main>
 
-    <footer class="mt-auto py-12 text-center w-full max-w-4xl border-t border-gray-100">
-        <p class="text-gray-400 text-xs">For unlimited hours and premium support, contact us.</p>
-        <a href="https://wa.me/8801604444716" class="inline-flex items-center gap-2 mt-4 text-green-600 font-semibold hover:text-green-700 transition-colors">
-            <span>WhatsApp: +880 1604 444716</span>
-        </a>
-    </footer>
-
-    <div id="overlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden">
+    <div id="overlay" class="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden">
         <div class="loader mb-6"></div>
-        <div class="text-center">
-            <p class="text-gray-900 font-bold text-lg">Preparing Live Stream</p>
-            <p class="text-gray-500 text-sm mt-1 px-10">Please ensure you have the rights to stream this content.</p>
-        </div>
+        <p class="text-white font-semibold">Processing Request...</p>
     </div>
 
     <script>
+        // আপনার Firebase Config দিন
         const firebaseConfig = { 
             apiKey: "AIzaSyBSS52Pp0z1rYIWzb0A-V7Yx_Ko4T7EFp8", 
             authDomain: "autostreamingbd.firebaseapp.com", 
@@ -103,20 +91,16 @@
             messagingSenderId: "604115747119", 
             appId: "1:604115747119:web:40ffdab256239d3d5f61da" 
         };
-        const GITHUB_TOKEN = "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"; 
-        const REPO_OWNER = "AutoStreamingBD";
-        const REPO_NAME = "AutoLiveYT";
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Realtime Updates
+        // Realtime Sync
         db.collection("system").doc("live_slots").onSnapshot((doc) => {
             const data = doc.data() || {};
             for (let i = 1; i <= 5; i++) {
                 const el = document.getElementById(`s${i}-status`), card = document.getElementById(`slot${i}-card`);
                 if (data[`slot${i}`] === "Available") {
-                    el.innerText = "AVAILABLE"; el.className = "text-[11px] font-bold text-green-500"; card.classList.remove('slot-booked');
+                    el.innerText = "ONLINE"; el.className = "text-xs font-bold text-green-400"; card.classList.remove('slot-booked');
                 } else {
                     card.classList.add('slot-booked');
                     updateTimer(i, data[`slot${i}_time`], el);
@@ -127,53 +111,34 @@
         function updateTimer(n, endTime, el) {
             const x = setInterval(() => {
                 const dist = endTime - Date.now();
-                if (dist <= 0) { 
-                    clearInterval(x); 
-                    db.collection("system").doc("live_slots").update({ [`slot${n}`]: "Available" }); 
-                    return; 
-                }
+                if (dist <= 0) { clearInterval(x); db.collection("system").doc("live_slots").update({[`slot${n}`]: "Available"}); return; }
                 const m = Math.floor(dist/60000), s = Math.floor((dist%60000)/1000);
-                el.innerText = `${m}:${s < 10 ? '0' : ''}${s} MINS LEFT`;
-                el.className = "text-[11px] font-bold text-red-500";
+                el.innerText = `${m}:${s < 10 ? '0' : ''}${s} LEFT`;
+                el.className = "text-xs font-bold text-red-400";
             }, 1000);
         }
 
         async function mainAction() {
             const key = document.getElementById('streamKey').value, vid = document.getElementById('videoId').value;
-            if(!key || !vid) return alert("Please fill in all fields.");
+            if(!key || !vid) return alert("Fill all fields.");
 
-            const overlay = document.getElementById('overlay');
-            overlay.classList.remove('hidden');
+            document.getElementById('overlay').classList.remove('hidden');
 
             try {
-                const snap = await db.collection("system").doc("live_slots").get(), data = snap.data();
-                let slotIdx = null;
-                for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
-                
-                if(!slotIdx) {
-                    overlay.classList.add('hidden');
-                    return alert("All slots are currently busy. Please wait.");
-                }
-
-                // Trigger GitHub Action
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/dispatches`, {
+                // Vercel Environment Variable থেকে টোকেন নেওয়ার জন্য আপনাকে একটি ছোট 
+                // api/dispatch.js ফাইল তৈরি করতে হবে। নিচের রিকোয়েস্টটি সেই এপিআইতে যাবে।
+                const response = await fetch('/api/dispatch', {
                     method: 'POST',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' },
-                    body: JSON.stringify({ event_type: "start-live", client_payload: { stream_key: key, video_id: vid } })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stream_key: key, video_id: vid })
                 });
 
                 if(response.ok) {
-                    const endAt = Date.now() + 600000;
-                    await db.collection("system").doc("live_slots").update({ [`slot${slotIdx}`]: "Booked", [`slot${slotIdx}_time`]: endAt });
-                    setTimeout(() => { overlay.classList.add('hidden'); alert("Stream initiated successfully!"); }, 3000);
-                } else {
-                    throw new Error();
-                }
-
-            } catch(e) { 
-                overlay.classList.add('hidden');
-                alert("Connection failed. Check your GitHub settings."); 
-            }
+                    // Firebase আপডেট লজিক...
+                    alert("Stream Started!");
+                } else { throw new Error(); }
+            } catch(e) { alert("Deployment Failed."); }
+            document.getElementById('overlay').classList.add('hidden');
         }
     </script>
 </body>
