@@ -1,4 +1,4 @@
-name: Ultra HD YouTube Streamer (Pro)
+name: Global Cloud Streamer Engine
 on:
   repository_dispatch:
     types: [start-live]
@@ -7,32 +7,33 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: System Optimization
+      - name: System Turbo Charge
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg python3-pip
-          # yt-dlp লেটেস্ট ভার্সন নিশ্চিত করা (প্রতিবার ফ্রেশ ইনস্টল)
+          # yt-dlp লেটেস্ট ফ্রেশ ভার্সন ডাউনলোড
           sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Deploy High-Performance Stream
+      - name: Multi-Client Cloud Deployment
         run: |
-          # ১. মাল্টি-ক্লায়েন্ট মেকানিজম (Android, iOS, এবং Web-Embedded ব্যবহার করে ইউটিউবকে কনফিউজ করা)
-          # ২. --force-overwrites এবং --no-check-certificates যোগ করা হয়েছে
+          # ১. অ্যান্ড্রয়েড এবং আইওএস ক্লায়েন্টকে প্রাইোরিটি দেওয়া (পাবলিক ইউজারদের ব্লকিং এড়াতে)
+          # ২. 'po_token' মেকানিজম সিমুলেট করার চেষ্টা
           
           VIDEO_URL=$(yt-dlp -g \
-            --extractor-args "youtube:player-client=android,ios,web_embedded,mweb" \
+            --extractor-args "youtube:player-client=android,ios,mweb" \
             --no-check-certificates \
-            --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            --prefer-free-formats \
+            --user-agent "Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Mobile Safari/537.36" \
             -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]" \
             "https://www.youtube.com/watch?v=${{ github.event.client_payload.video_id }}")
 
-          # ৩. FFmpeg-কে আরও স্ট্যাবল করার জন্য ক্যাশ ও বাফার অপ্টিমাইজেশন
-          # ৪. রিয়েল-টাইম থ্রেড কিউ সাইজ বাড়ানো হয়েছে যাতে ল্যাগ না হয়
+          # ৩. পাবলিক ইউজারদের জন্য কানেকশন ড্রপ প্রোটেকশন
+          # ৪. থ্রেড কিউ এবং রিয়েল টাইম বাফার অপ্টিমাইজেশন
           
-          timeout 600s ffmpeg -re -connect_delay 5000 -thread_queue_size 1024 -i "$VIDEO_URL" \
-          -c:v libx264 -preset superfast -tune zerolatency -b:v 6000k -maxrate 6000k -bufsize 12000k \
+          timeout 600s ffmpeg -re -err_detect ignore_err -thread_queue_size 2048 -i "$VIDEO_URL" \
+          -c:v libx264 -preset superfast -tune zerolatency -b:v 5500k -maxrate 6000k -bufsize 12000k \
           -pix_fmt yuv420p -s 1920x1080 -g 60 -r 30 \
-          -c:a aac -b:a 160k -ar 48000 \
+          -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.client_payload.stream_key }}"
         
