@@ -3,86 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoStreamingBD | Cloud Streaming</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <title>AutoStreamingBD | Cloud Live Trial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { 
-            font-family: 'Inter', 'Hind Siliguri', sans-serif;
-            /* আপনার পছন্দের ইমেজের লিঙ্ক এখানে দিন */
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
-                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop');
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: white;
         }
         .glass-card { 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
         }
-        .slot-booked { background: rgba(239, 68, 68, 0.1) !important; border-color: rgba(239, 68, 68, 0.3) !important; }
-        .loader {
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%; width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .slot-booked { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
 
-    <nav class="w-full bg-black/20 backdrop-blur-md border-b border-white/5 py-5 px-8 flex justify-between items-center mb-12">
-        <div class="text-2xl font-bold text-blue-400">AutoStreaming<span class="text-white">BD</span></div>
+    <nav class="w-full py-6 px-10 flex justify-between items-center border-b border-white/10 mb-12">
+        <div class="text-2xl font-bold text-blue-400">AutoStreamingBD</div>
+        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Secure Cloud Access</div>
     </nav>
 
-    <div class="w-full max-w-5xl px-4 grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-5xl px-4 mb-10">
         <script>
             for(let i=1; i<=5; i++) {
                 document.write(`
-                    <div id="slot${i}-card" class="glass-card p-5 rounded-2xl text-center transition-all">
-                        <p class="text-[10px] font-bold text-blue-300 uppercase mb-1">Server 0${i}</p>
-                        <div id="s${i}-status" class="text-sm font-semibold text-gray-400">Loading...</div>
+                    <div id="slot${i}-card" class="glass-card p-5 rounded-2xl text-center transition-all duration-500">
+                        <span class="text-[9px] text-blue-300 font-bold uppercase tracking-tighter">Server Slot 0${i}</span>
+                        <div id="s${i}-status" class="text-xs font-bold mt-1 text-gray-500 italic">Syncing...</div>
                     </div>
                 `);
             }
         </script>
     </div>
 
-    <main class="w-full max-w-lg px-4 mb-10">
+    <main class="w-full max-w-lg px-4">
         <div class="glass-card p-10 rounded-[2.5rem] shadow-2xl">
-            <h1 class="text-2xl font-bold mb-2">Live Configuration</h1>
-            <p class="text-gray-400 text-sm mb-8">Deploy your 10-minute trial session instantly.</p>
+            <h2 class="text-2xl font-bold mb-2">Live Stream Config</h2>
+            <p class="text-gray-400 text-sm mb-8">Enter your YouTube stream details below.</p>
             
             <div class="space-y-6">
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 uppercase mb-2 block">Stream Key</label>
-                    <input id="streamKey" type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white">
+                    <label class="text-[10px] text-gray-400 font-bold uppercase ml-1 mb-2 block tracking-widest">Stream Key</label>
+                    <input id="streamKey" type="password" placeholder="•••• •••• •••• ••••" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all">
                 </div>
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 uppercase mb-2 block">Video ID</label>
-                    <input id="videoId" type="text" placeholder="dQw4w9WgXcQ" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white">
+                    <label class="text-[10px] text-gray-400 font-bold uppercase ml-1 mb-2 block tracking-widest">Video ID</label>
+                    <input id="videoId" type="text" placeholder="e.g. dQw4w9WgXcQ" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition-all">
                 </div>
-                <button onclick="mainAction()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-bold transition-all transform active:scale-95 shadow-lg shadow-blue-900/20">
-                    DEPLOY NOW
+                <button onclick="mainAction()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-xl font-black text-xs tracking-widest transition-all transform active:scale-95">
+                    DEPLOY LIVE SESSION
                 </button>
             </div>
         </div>
     </main>
 
-    <div id="overlay" class="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden">
-        <div class="loader mb-6"></div>
-        <p class="text-white font-semibold">Processing Request...</p>
+    <div id="overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden px-6">
+        <div class="w-12 h-12 border-4 border-white/10 border-t-blue-500 rounded-full animate-spin mb-6"></div>
+        <p class="text-white font-bold tracking-widest text-xs uppercase">Initializing Cloud Protocol...</p>
     </div>
 
     <script>
-        // আপনার Firebase Config দিন
         const firebaseConfig = { 
             apiKey: "AIzaSyBSS52Pp0z1rYIWzb0A-V7Yx_Ko4T7EFp8", 
             authDomain: "autostreamingbd.firebaseapp.com", 
@@ -95,38 +85,42 @@
         const db = firebase.firestore();
 
         // Realtime Sync
-        db.collection("system").doc("live_slots").onSnapshot((doc) => {
+        db.collection("system").doc("live_slots").onSnapshot(doc => {
             const data = doc.data() || {};
-            for (let i = 1; i <= 5; i++) {
+            for(let i=1; i<=5; i++){
                 const el = document.getElementById(`s${i}-status`), card = document.getElementById(`slot${i}-card`);
-                if (data[`slot${i}`] === "Available") {
-                    el.innerText = "ONLINE"; el.className = "text-xs font-bold text-green-400"; card.classList.remove('slot-booked');
+                if(data[`slot${i}`] === "Available"){
+                    el.innerText = "ONLINE"; el.className = "text-green-400 font-bold text-[10px]"; card.classList.remove('slot-booked');
                 } else {
                     card.classList.add('slot-booked');
-                    updateTimer(i, data[`slot${i}_time`], el);
+                    const endTime = data[`slot${i}_time`];
+                    const x = setInterval(() => {
+                        const dist = endTime - Date.now();
+                        if(dist < 0){ clearInterval(x); db.collection("system").doc("live_slots").update({[`slot${i}`]:"Available"}); return; }
+                        el.innerText = Math.floor(dist/60000) + ":" + String(Math.floor((dist%60000)/1000)).padStart(2, '0') + " LEFT";
+                        el.className = "text-red-500 font-bold text-[10px]";
+                    }, 1000);
                 }
             }
         });
 
-        function updateTimer(n, endTime, el) {
-            const x = setInterval(() => {
-                const dist = endTime - Date.now();
-                if (dist <= 0) { clearInterval(x); db.collection("system").doc("live_slots").update({[`slot${n}`]: "Available"}); return; }
-                const m = Math.floor(dist/60000), s = Math.floor((dist%60000)/1000);
-                el.innerText = `${m}:${s < 10 ? '0' : ''}${s} LEFT`;
-                el.className = "text-xs font-bold text-red-400";
-            }, 1000);
-        }
-
         async function mainAction() {
             const key = document.getElementById('streamKey').value, vid = document.getElementById('videoId').value;
-            if(!key || !vid) return alert("Fill all fields.");
-
+            if(!key || !vid) return alert("Fill all fields!");
+            
             document.getElementById('overlay').classList.remove('hidden');
 
             try {
-                // Vercel Environment Variable থেকে টোকেন নেওয়ার জন্য আপনাকে একটি ছোট 
-                // api/dispatch.js ফাইল তৈরি করতে হবে। নিচের রিকোয়েস্টটি সেই এপিআইতে যাবে।
+                const snap = await db.collection("system").doc("live_slots").get(), data = snap.data();
+                let slotIdx = null;
+                for(let i=1; i<=5; i++) if(data[`slot${i}`] === "Available") { slotIdx = i; break; }
+                
+                if(!slotIdx) { 
+                    document.getElementById('overlay').classList.add('hidden');
+                    return alert("All slots are currently busy!"); 
+                }
+
+                // Call Vercel API
                 const response = await fetch('/api/dispatch', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -134,11 +128,19 @@
                 });
 
                 if(response.ok) {
-                    // Firebase আপডেট লজিক...
-                    alert("Stream Started!");
+                    await db.collection("system").doc("live_slots").update({
+                        [`slot${slotIdx}`]: "Booked", 
+                        [`slot${slotIdx}_time`]: Date.now() + 600000 
+                    });
+                    setTimeout(() => { 
+                        document.getElementById('overlay').classList.add('hidden');
+                        alert("Live session deployed successfully!"); 
+                    }, 2000);
                 } else { throw new Error(); }
-            } catch(e) { alert("Deployment Failed."); }
-            document.getElementById('overlay').classList.add('hidden');
+            } catch(e) { 
+                document.getElementById('overlay').classList.add('hidden');
+                alert("Cloud connection failed. Check your GitHub Token in Vercel settings."); 
+            }
         }
     </script>
 </body>
