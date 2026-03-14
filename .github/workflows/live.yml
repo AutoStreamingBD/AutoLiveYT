@@ -10,30 +10,31 @@ jobs:
       - name: System Turbo Charge
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg python3-pip
-          # yt-dlp লেটেস্ট ফ্রেশ ভার্সন ডাউনলোড
+          sudo apt-get install -y ffmpeg jq
           sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Multi-Client Cloud Deployment
+      - name: High-Level Bypass & Stream
         run: |
-          # ১. অ্যান্ড্রয়েড এবং আইওএস ক্লায়েন্টকে প্রাইোরিটি দেওয়া (পাবলিক ইউজারদের ব্লকিং এড়াতে)
-          # ২. 'po_token' মেকানিজম সিমুলেট করার চেষ্টা
+          # ইউটিউবের আইপি ব্লক এড়াতে একাধিক 'ইনস্ট্যান্স' থেকে লিঙ্ক খোঁজার চেষ্টা করবে
+          # এটি সরাসরি ইউটিউবকে হিট না করে বিভিন্ন ওপেন সোর্স এপিআই ব্যবহার করবে
           
-          VIDEO_URL=$(yt-dlp -g \
-            --extractor-args "youtube:player-client=android,ios,mweb" \
-            --no-check-certificates \
-            --prefer-free-formats \
-            --user-agent "Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Mobile Safari/537.36" \
-            -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]" \
-            "https://www.youtube.com/watch?v=${{ github.event.client_payload.video_id }}")
+          ID="${{ github.event.client_payload.video_id }}"
+          
+          # মেকানিজম ১: ইনভিডিয়াস এপিআই ব্যবহার করে লিঙ্ক বের করা (কুকিজ লাগে না)
+          VIDEO_URL=$(curl -s "https://invidious.snopyta.org/api/v1/videos/$ID" | jq -r '.formatStreams[0].url' || \
+                      curl -s "https://yewtu.be/api/v1/videos/$ID" | jq -r '.formatStreams[0].url' || \
+                      yt-dlp -g --extractor-args "youtube:player-client=tv,html5" "https://www.youtube.com/watch?v=$ID")
 
-          # ৩. পাবলিক ইউজারদের জন্য কানেকশন ড্রপ প্রোটেকশন
-          # ৪. থ্রেড কিউ এবং রিয়েল টাইম বাফার অপ্টিমাইজেশন
-          
-          timeout 600s ffmpeg -re -err_detect ignore_err -thread_queue_size 2048 -i "$VIDEO_URL" \
-          -c:v libx264 -preset superfast -tune zerolatency -b:v 5500k -maxrate 6000k -bufsize 12000k \
-          -pix_fmt yuv420p -s 1920x1080 -g 60 -r 30 \
+          if [ -z "$VIDEO_URL" ] || [ "$VIDEO_URL" == "null" ]; then
+            echo "Failed to bypass YouTube detection."
+            exit 1
+          fi
+
+          # FFmpeg অপ্টিমাইজেশন: পাবলিক ইউজারদের জন্য হাই-বিটরেট ও বাফার
+          timeout 600s ffmpeg -re -i "$VIDEO_URL" \
+          -c:v libx264 -preset superfast -tune zerolatency -b:v 4500k -maxrate 5000k -bufsize 10000k \
+          -pix_fmt yuv420p -s 1280x720 -g 60 -r 30 \
           -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.client_payload.stream_key }}"
-        
+          
